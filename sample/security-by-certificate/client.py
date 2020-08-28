@@ -1,5 +1,8 @@
 """ 
-This sample code demostrates how you can use AWS IoT Policy (check policy.json) to restrict access to a topic from a client device. For devices registered in AWS IoT Core registry, the policy grants permission to connect to AWS IoT Core with a client ID that matches a thing name, and to publish to a topic whose name is equal to the certificateId of the certificate the device used to authenticate itself.
+This sample code demostrates how you can use AWS IoT Policy (check policy.json) to restrict access to a topic from
+a client device. For devices registered in AWS IoT Core registry, the policy grants permission to connect to AWS
+IoT Core with a client ID that matches a thing name, and to publish to a topic whose name is equal to the
+certificateId of the certificate the device used to authenticate itself.
 """
 
 import sys
