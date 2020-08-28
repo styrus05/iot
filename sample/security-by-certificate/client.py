@@ -12,7 +12,7 @@ import json
 import time
 
 # Enter your thing name from AWS IoT Core. This must match the thing name you have created because security policy attached to thing only allows connecting to the thing id.
-thingName = 'RPi-2'
+thingName = 'enter-you-thing-name'
 
 # Enter your certificate id. This must match the id for the certificate being used for authentication.
 # You can get certificate id in AWS IoT Core where you created the certificate.
@@ -24,13 +24,14 @@ mqttc = AWSIoTMQTTClient(thingName)
 mqttc.configureEndpoint("data.iot.us-west-2.amazonaws.com", 8883)
 
 # Provide correct path to the certificate and private key
+# You can find details for creating certificate here https://docs.aws.amazon.com/iot/latest/developerguide/device-certs-create.html
 mqttc.configureCredentials(
-    "./rootCA.pem", "./privateKey.pem", "./certificate.pem")
+    "./rootCA.pem", "./your-privateKey.pem", "./your-certificate.pem")
 
-# Prepare the message that you want to publish to AWS IoT. You can add additional attributes here.
+# Prepare the message that you want to publish to the MQTT Topic. You can add additional attributes here.
 message = {
     'source': thingName,
-    'message': "this is the sample message from " + thingName
+    'message': "This is the sample message from " + thingName
 }
 
 # Encoding into JSON
