@@ -5,7 +5,7 @@
       "Effect": "Allow",
       "Action": ["iot:Publish"],
       "Resource": [
-        "arn:aws:iot:us-west-2:your-aws-account-no:topic/${iot:CertificateId}"
+        "arn:aws:iot:us-west-2:your-aws-account-no:topic/${iot:Connection.Thing.ThingName}"
       ]
     },
     {
