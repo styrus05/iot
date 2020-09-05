@@ -17,6 +17,6 @@ pip3 install sense-hat
 
 python3 publish.py --endpoint your-aws-iot-core-endpoint --root-ca path-for-rootCA-file --cert path-for-certificate-file --key path-for-private-key-file --message '{"message":"hello"}' --topic=it-must-match-your-thing-name/scan --count=10 --client-id=it-must-match-your-thing-name
 
-5. Subscribe message from ratansRpiBlack
+5. Subscribe message from a topic starting with thing name
 
-python3 subscribe.py --endpoint your-aws-iot-core-endpoint --root-ca path-for-rootCA-file --cert path-for-certificate-file --key path-for-private-key-file --message '{"message":"hello"}' --topic=it-must-match-your-thing-name/scan --client-id=it-must-match-your-thing-name
+python3 subscribe.py --endpoint your-aws-iot-core-endpoint --root-ca path-for-rootCA-file --cert path-for-certificate-file --key path-for-private-key-file --topic=it-must-match-your-thing-name/scan --client-id=it-must-match-your-thing-name
