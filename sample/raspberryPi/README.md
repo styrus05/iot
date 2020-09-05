@@ -1,15 +1,22 @@
-# How to run the samples on Raspberry Pi?
+# How to run the samples on a Raspberry Pi?
 
 1. install AWS IOT SDK for python (python 3.5+ required)
    pip install awsiotsdk
-   or pip3 install awsiotsdk
+   or pip3 install awsiotsdk (if pip3 fails, check if you have a latest version of pip by pressing tab after pip and using he most latest version which is greate 3.5)
 
 If issues with installation - check https://github.com/aws/aws-iot-device-sdk-python-v2 for instructions
 
-2. Register a thing in AWS IoT Core and associate certificate and policy to it.
+Note: if you have sense Hat installed on your pi, also install
+pip3 install sense-hat
 
-3. To publish to test/topic
-   python pubsub.py --endpoint <endpoint> --root-ca <file> --cert <file> --key <file>
+2. Register a thing in AWS IoT Core and associate certificate and policy (Refer to policyExamples/secure-by-thingName.json for example policy).
 
-4. To subscribe from test/topic
-   python subscribe.py --endpoint <endpoint> --root-ca <file> --cert <file> --key <file>
+3. Store the certificate in a secure location on your raspberry pi
+
+4. Publish message to a topic starting with thing name
+
+python3 publish.py --endpoint your-aws-iot-core-endpoint --root-ca path-for-rootCA-file --cert path-for-certificate-file --key path-for-private-key-file --message '{"message":"hello"}' --topic=it-must-match-your-thing-name/scan --count=10 --client-id=it-must-match-your-thing-name
+
+5. Subscribe message from ratansRpiBlack
+
+python3 subscribe.py --endpoint your-aws-iot-core-endpoint --root-ca path-for-rootCA-file --cert path-for-certificate-file --key path-for-private-key-file --message '{"message":"hello"}' --topic=it-must-match-your-thing-name/scan --client-id=it-must-match-your-thing-name

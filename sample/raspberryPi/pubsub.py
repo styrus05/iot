@@ -11,12 +11,6 @@ import threading
 import time
 from uuid import uuid4
 
-import json
-import subprocess
-# from sense_hat import SenseHat
-
-# sense = SenseHat()
-
 # This sample uses the Message Broker for AWS IoT to send and receive messages
 # through an MQTT connection. On startup, the device connects to the server,
 # subscribes to a topic, and begins publishing messages to that topic.
@@ -96,21 +90,9 @@ def on_resubscribe_complete(resubscribe_future):
 def on_message_received(topic, payload, **kwargs):
     print("Received message from topic '{}': {}".format(topic, payload))
     global received_count
-
-    # convert byte to string
-    payloadString = payload.decode('utf-8')
-    # print(payloadString)
-
-    # convert string to json
-    payloadJson = json.loads(payloadString)
-
-    # display message on senseHat LED
-    # try:
-    #     sense.show_message(payloadJson['message'], text_colour=[255, 0, 0])
-
-    # received_count += 1
-    # if received_count == args.count:
-    #	received_all_event.set()
+    received_count += 1
+    if received_count == args.count:
+        received_all_event.set()
 
 
 if __name__ == '__main__':
@@ -175,23 +157,24 @@ if __name__ == '__main__':
     # Publish message to server desired number of times.
     # This step is skipped if message is blank.
     # This step loops forever if count was set to 0.
-    ''' if args.message:
+    if args.message:
         if args.count == 0:
-            print ("Sending messages until program killed")
+            print("Sending messages until program killed")
         else:
-            print ("Sending {} message(s)".format(args.count))
+            print("Sending {} message(s)".format(args.count))
 
         publish_count = 1
         while (publish_count <= args.count) or (args.count == 0):
             message = "{} [{}]".format(args.message, publish_count)
-            print("Publishing message to topic '{}': {}".format(args.topic, message))
+            print("Publishing message to topic '{}': {}".format(
+                args.topic, message))
             mqtt_connection.publish(
                 topic=args.topic,
                 payload=message,
                 qos=mqtt.QoS.AT_LEAST_ONCE)
             time.sleep(1)
             publish_count += 1
-    '''
+
     # Wait for all messages to be received.
     # This waits forever if count was set to 0.
     if args.count != 0 and not received_all_event.is_set():
