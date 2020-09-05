@@ -16,12 +16,11 @@ register_thing_response = None
 
 
 def on_connection_interrupted(connection, error, **kwargs):
-    print(f'Connection interrupted. error: {error}')
+    print("Connection interrupted. error: {}".format(error))
 
 
 def on_connection_resumed(connection, return_code, session_present, **kwargs):
-    print(
-        f"Connection resumed. return_code: {return_code} session_present: {session_present}")
+    print("Connection resumed. return_code: {} session_present: {}".format(return_code, session_present))
 
     if return_code == mqtt.ConnectReturnCode.ACCEPTED and not session_present:
         print("Session did not persist. Resubscribing to existing topics...")
@@ -31,26 +30,25 @@ def on_connection_resumed(connection, return_code, session_present, **kwargs):
 
 def on_resubscribe_complete(resubscribe_future):
     resubscribe_results = resubscribe_future.result()
-    print(f"Resubscribe results: {resubscribe_results}")
+    # print(f"Resubscribe results: {resubscribe_results}")
+    print("Resubscribe results: {}".format(resubscribe_results))
     for resub_topic, qos in resubscribe_results['topics']:
         if qos is None:
-            sys.exit(f"Server rejected resubscribe to topic: {resub_topic}")
+            sys.exit("Server rejected resubscribe to topic: {}".format(resub_topic))
 
 
 def createkeysandcertificate_execution_accepted(response):
     try:
         global create_keys_and_certificate_response
         create_keys_and_certificate_response = response
-        print(
-            f"Received a new message: {create_keys_and_certificate_response}")
+        print("Received a new message: {}".format(create_keys_and_certificate_response))
         return
     except Exception as e:
         sys.exit(e)
 
 
 def createkeysandcertificate_execution_rejected(rejected):
-    sys.exit(
-        f"CreateKeysAndCertificate Request rejected with code:'{rejected.error_code}' message:'{rejected.error_message}' statuscode:'{rejected.status_code}'")
+    sys.exit("CreateKeysAndCertificate Request rejected with code:{} message:{} statuscode:{}".format(rejected.error_code,rejected.error_message,rejected.status_code))
 
 
 def on_publish_create_keys_and_certificate(future):
@@ -66,7 +64,7 @@ def registerthing_execution_accepted(response):
     try:
         global register_thing_response
         register_thing_response = response
-        print(f"Received a new message {register_thing_response} ")
+        print("Received a new message {} ".format(register_thing_response))
         return
     except Exception as e:
         sys.exit(e)
@@ -74,7 +72,7 @@ def registerthing_execution_accepted(response):
 
 def registerthing_execution_rejected(rejected):
     sys.exit(
-        f"RegisterThing Request rejected with code:'{rejected.error_code}' message:'{rejected.error_message}' statuscode:'{rejected.status_code}'")
+        "RegisterThing Request rejected with code:{} message:{} statuscode:{}".format(rejected.error_code,rejected.error_message,rejected.status_code))
 
 
 def wait_for_create_keys_and_certificate_response():
@@ -82,8 +80,7 @@ def wait_for_create_keys_and_certificate_response():
     while loop_count < 10 and create_keys_and_certificate_response is None:
         if create_keys_and_certificate_response is not None:
             break
-        print(
-            f"Waiting... CreateKeysAndCertificateResponse: {json.dumps(create_keys_and_certificate_response)}")
+        print("Waiting... CreateKeysAndCertificateResponse: {}".format(json.dumps(create_keys_and_certificate_response)))
         loop_count += 1
         sleep(1)
 
@@ -103,8 +100,7 @@ def wait_for_register_thing_response():
         if register_thing_response is not None:
             break
         loop_count += 1
-        print(
-            f"Waiting... RegisterThingResponse: {json.dumps(register_thing_response)}")
+        print("Waiting... RegisterThingResponse: {}".format(json.dumps(register_thing_response)))
         sleep(1)
 
 
@@ -165,7 +161,7 @@ mqtt_connection = mqtt_connection_builder.mtls_from_path(
     clean_session=False,
     keep_alive_secs=6)
 
-print(f"Connecting to {iot_endpoint} with client ID '{machine_uuid}'...")
+print("Connecting to {} with client ID '{}'...".format(iot_endpoint, machine_uuid))
 connected_future = mqtt_connection.connect()
 identity_client = iotidentity.IotIdentityClient(mqtt_connection)
 
@@ -237,12 +233,12 @@ long_term_credentials_path = join(
 makedirs(long_term_credentials_path, exist_ok=True)
 
 claim_cert_long_term_path = join(
-    long_term_credentials_path, f"{machine_uuid}-certificate.pem.crt")
+    long_term_credentials_path, "{}-certificate.pem.crt".format(machine_uuid))
 with open(claim_cert_long_term_path, "w") as outfile:
     outfile.write(create_keys_and_certificate_response.certificate_pem)
 
 private_key_long_term_path = join(
-    long_term_credentials_path, f"{machine_uuid}-private.pem.key")
+    long_term_credentials_path, "{}-private.pem.key".format(machine_uuid))
 with open(private_key_long_term_path, "w") as outfile:
     outfile.write(create_keys_and_certificate_response.private_key)
 
