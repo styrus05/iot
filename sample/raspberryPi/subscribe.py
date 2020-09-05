@@ -13,9 +13,12 @@ from uuid import uuid4
 
 import json
 import subprocess
-# from sense_hat import SenseHat
+try:
+    from sense_hat import SenseHat
+    sense = SenseHat()
+except:
+    print("sense hat module not found")
 
-# sense = SenseHat()
 
 # This sample uses the Message Broker for AWS IoT to send and receive messages
 # through an MQTT connection. On startup, the device connects to the server,
@@ -99,14 +102,17 @@ def on_message_received(topic, payload, **kwargs):
 
     # convert byte to string
     payloadString = payload.decode('utf-8')
-    # print(payloadString)
+    print(payloadString)
 
     # convert string to json
     payloadJson = json.loads(payloadString)
 
+    # print received message
     # display message on senseHat LED
-    # try:
-    #     sense.show_message(payloadJson['message'], text_colour=[255, 0, 0])
+    try:
+        sense.show_message(payloadJson['message'], text_colour=[255, 0, 0])
+    except:
+        print('No Raspberry pi Sense Hat found')
 
     # received_count += 1
     # if received_count == args.count:
