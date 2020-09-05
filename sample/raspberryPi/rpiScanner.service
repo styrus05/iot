@@ -1,0 +1,13 @@
+[Unit]
+Description=RPi scanner service
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/Documents/code/iot/sample/raspberryPi/subscribe.py --endpoint a3ng4y5jnf3dy-ats.iot.us-west-2.amazonaws.com --root-ca root-ca-path --cert your-device-certificate-path --key your-device-privatekey-path  --topic=your-thing-id/scan --client-id=your-thing-id
+WorkingDirectory=/home/pi/myscript
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
