@@ -9,6 +9,9 @@ from awsiot import mqtt_connection_builder
 import sys
 import threading
 import time
+from time import sleep
+from random import randint
+
 from uuid import uuid4
 
 import json
@@ -102,17 +105,46 @@ def on_message_received(topic, payload, **kwargs):
 
     # convert byte to string
     payloadString = payload.decode('utf-8')
-    print(payloadString)
+    # print(payloadString)
 
     # convert string to json
     payloadJson = json.loads(payloadString)
 
     # print received message
     # display message on senseHat LED
-    try:
-        sense.show_message(payloadJson['message'], text_colour=[255, 0, 0])
-    except:
-        print('No Raspberry pi Sense Hat found')
+
+    if(payloadJson['message'].upper() == 'SPARKLE'):
+        try:
+            j = 0
+            i = 0
+            sense.clear()
+            while i < 2:
+                x = randint(0, 7)
+                y = randint(0, 7)
+                r = randint(0, 255)
+                g = randint(0, 255)
+                b = randint(0, 255)
+                sense.set_pixel(x, y, r, g, b)
+                j = j + 1
+                sleep(0.01)
+                if(j == 50):
+                    sense.clear(255, 255, 255)
+                    sleep(0.3)
+                    sense.clear(255, 0, 0)
+                    sleep(0.3)
+                    sense.clear(0, 255, 0)
+                    sleep(0.3)
+                    sense.clear(0, 0, 255)
+                    j = 0
+                    i = i+1
+            sense.clear(255, 255, 255)
+        except:
+            print(payloadString)
+    else:
+        try:
+            sense.show_message(payloadJson['message'], text_colour=[255, 0, 0])
+        except:
+            print(payloadString)
 
     # received_count += 1
     # if received_count == args.count:
