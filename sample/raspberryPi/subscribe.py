@@ -137,7 +137,7 @@ def on_message_received(topic, payload, **kwargs):
                     sense.clear(0, 0, 255)
                     j = 0
                     i = i+1
-            sense.clear(255, 255, 255)
+            sense.clear(0, 0, 0)
         except:
             print(payloadString)
     else:
