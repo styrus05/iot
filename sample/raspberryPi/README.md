@@ -25,6 +25,8 @@ Note: Subscribe code looks for message in format {"message":"hello"} and display
 
 6. Optional steps to add the subscribe.py as a daemon
    - follow the instructions listed here https://www.raspberrypi.org/documentation/linux/usage/systemd.md
+   - Note: don't use ~ in the path, use absolute path /home/pi/Documents/code instead of ~/Documents/code
+   - Note: provide the working directory where the code file (subscribe.py).
    - a sample service file is available in rpiScanner.service
    - edit the file to put the correct certificate path
    - then copy this file in /etc/systemd/system/ folder
@@ -33,3 +35,5 @@ Note: Subscribe code looks for message in format {"message":"hello"} and display
      sudo systemctl start rpiScanner.service
    - once tested successfully, enable it by
      sudo systemctl enable rpiScanner.service
+   - To CHECK logs for the daemon process if there are errors - journalctl -u rpiScanner.service -b
+   - sudo systemctl status rpiScanner.service to check the status of the service
