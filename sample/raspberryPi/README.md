@@ -29,7 +29,7 @@ Note: Subscribe code looks for message in format {"message":"hello"} and display
    - Note: provide the working directory where the code file (subscribe.py).
    - a sample service file is available in rpiScanner.service
    - edit the file to put the correct certificate path
-   - then copy this file in /etc/systemd/system/ folder
+   - then copy this file in /etc/systemd/system/ folder (or run the shell script deploy.sh by running 'sudo ./deploy.sh')
      sudo cp rpiScanner.service /etc/systemd/system/rpiScanner.service
    - test by starting the daemon process
      sudo systemctl start rpiScanner.service

@@ -11,6 +11,8 @@ import threading
 import time
 from time import sleep
 from random import randint
+from datetime import datetime
+
 
 from uuid import uuid4
 
@@ -122,6 +124,19 @@ def on_resubscribe_complete(resubscribe_future):
         if qos is None:
             sys.exit("Server rejected resubscribe to topic: {}".format(topic))
 
+# Define function to collect weather data
+
+
+def get_weather(sensor_id, id):
+    temperature = float(sense.get_temperature() * (9 / 5) + 32)
+    humidity = float(sense.get_humidity())
+    pressure = float(sense.get_pressure())
+    timestamp = str(datetime.now())
+
+    weather = {'sensorId': sensor_id, 'timestamp': timestamp,
+               'temperature': temperature, 'humidity': humidity, 'pressure': pressure}
+    return weather
+
 
 # Callback when the subscribed topic receives a message
 def on_message_received(topic, payload, **kwargs):
@@ -137,7 +152,16 @@ def on_message_received(topic, payload, **kwargs):
 
     # print received message
     # display message on senseHat LED
-    if (payloadJson['message'].upper() == 'ON'):
+    if (payloadJson['message'].upper() == 'SET'):
+        try:
+            #hex_color = '123456'
+            hex_color = payloadJson['color']
+            RGB_color = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+            # print(RGB_color)
+            sense.clear(RGB_color[0], RGB_color[1], RGB_color[2])
+        except:
+            print(payloadString)
+    elif (payloadJson['message'].upper() == 'ON'):
         try:
             sense.clear(255, 255, 255)
         except:
@@ -251,23 +275,44 @@ if __name__ == '__main__':
     # Publish message to server desired number of times.
     # This step is skipped if message is blank.
     # This step loops forever if count was set to 0.
-    ''' if args.message:
+
+    # Example command topic is office/weather/rpi-B123/command
+    command_topic = args.topic
+
+    # get the sensor id
+    sensor_id = args.topic.split("/")[2]
+
+    # get the high-level topic name
+    sensor_topic = args.topic.split(
+        "/")[0] + "/" + args.topic.split("/")[1] + "/" + sensor_id
+
+    # sensor_topic = "office/weather"
+    id = 0
+    metrics = ['temperature', 'humidity', 'pressure']
+    if args.message:
         if args.count == 0:
-            print ("Sending messages until program killed")
+            print("Sending messages until program killed")
         else:
-            print ("Sending {} message(s)".format(args.count))
+            print("Sending {} message(s)".format(args.count))
 
         publish_count = 1
         while (publish_count <= args.count) or (args.count == 0):
-            message = "{} [{}]".format(args.message, publish_count)
-            print("Publishing message to topic '{}': {}".format(args.topic, message))
-            mqtt_connection.publish(
-                topic=args.topic,
-                payload=message,
-                qos=mqtt.QoS.AT_LEAST_ONCE)
-            time.sleep(1)
-            publish_count += 1
-    '''
+            for metric in metrics:
+                data = {key: get_weather(sensor_id, id)[key] for key in (
+                    metric, 'sensorId', 'timestamp')}
+                # sub_topic = sensor_topic.split('/')[0] + '/metrics/' + metric
+                sub_topic = sensor_topic + "/" + metric
+                mqtt_connection.publish(topic=sub_topic, payload=json.dumps(
+                    data), qos=mqtt.QoS.AT_LEAST_ONCE)
+                print('The ' + metric + ' recorded is ' + str(data[metric]) + '. Published message on '
+                      'topic ' + sub_topic)
+            #mqtt_connection.publish(sensor_topic, json.dumps(get_weather(id)), config.QOS_LEVEL)
+            mqtt_connection.publish(topic=sensor_topic, payload=json.dumps(
+                get_weather(sensor_id, id)), qos=mqtt.QoS.AT_LEAST_ONCE)
+            print('Published message on topic ' + sensor_topic)
+            id += 1
+            time.sleep(15)
+
     # Wait for all messages to be received.
     # This waits forever if count was set to 0.
     if args.count != 0 and not received_all_event.is_set():
