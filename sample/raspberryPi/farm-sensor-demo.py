@@ -131,7 +131,7 @@ def get_weather(sensor_id, id):
     temperature = float(sense.get_temperature() * (9 / 5) + 32)
     humidity = float(sense.get_humidity())
     pressure = float(sense.get_pressure())
-    timestamp = str(datetime.now())
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     weather = {'sensorId': sensor_id, 'timestamp': timestamp,
                'temperature': temperature, 'humidity': humidity, 'pressure': pressure}
